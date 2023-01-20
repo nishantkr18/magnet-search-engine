@@ -28,7 +28,6 @@
 import json
 from urllib.parse import urlencode
 
-from search import prettyPrinter
 from helpers import retrieve_url
 
 
