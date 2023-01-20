@@ -1,0 +1,4 @@
+pandas==1.2.4
+search==1.0.0
+SocksiPy_branch==1.01
+streamlit==1.17.0
