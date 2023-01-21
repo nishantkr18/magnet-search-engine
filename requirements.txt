@@ -1,2 +1,3 @@
 pandas==1.2.4
+SocksiPy_branch==1.01
 streamlit==1.17.0
