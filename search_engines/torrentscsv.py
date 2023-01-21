@@ -27,6 +27,7 @@
 
 import json
 from urllib.parse import urlencode
+from time import sleep
 
 from helpers import retrieve_url
 
@@ -68,7 +69,7 @@ class torrentscsv(object):
                    'leech': result['leechers'],
                    'engine_url': self.url,
                    'desc_link': desc_url}
-            prettyPrinter(res)
+            yield res
 
     def download_link(self, result):
         return "magnet:?xt=urn:btih:{}&{}&{}".format(

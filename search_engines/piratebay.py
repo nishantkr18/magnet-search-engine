@@ -76,8 +76,6 @@ class piratebay(object):
         if len(response_json) == 0:
             return
 
-        result_list = []
-
         # parse results
         for result in response_json:
             res = {
@@ -89,10 +87,7 @@ class piratebay(object):
                 'engine_url': self.url,
                 'desc_link': self.url + '/description.php?id=' + result['id']
             }
-        
-            result_list.append(res)
-
-        return result_list
+            yield res
 
 
     def download_link(self, result):
