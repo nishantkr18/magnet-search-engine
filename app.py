@@ -7,18 +7,22 @@ from search_engines import piratebay
 
 
 def main():
-    st.title("Torrent search engine")
-    search_text = st.text_input("Search for a movie:")
+    st.title("Movie search engine")
+    search_text = st.text_input("Search for a movie:", value='The Matrix')
     if search_text:
-        results = piratebay.piratebay().search(search_text, cat='movies')
+        with st.spinner('Wait for it...'):
+            results = piratebay.piratebay().search(search_text, cat='movies')
         if results:
             results = pd.DataFrame.from_dict(results)
             results['size'] = (pd.to_numeric(results['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
-            # st.dataframe(results[['name', 'size', 'seeds', 'leech', 'link']])
             results['magnet'] = results['link'].apply(lambda x: f'<a target="_blank" href="{x}">Download</a>')
-            st.markdown(results[['name', 'size', 'seeds', 'leech', 'magnet']].to_html(render_links=True, escape=False),unsafe_allow_html=True)
-        else:
-            st.error("No results found")
+            results = results[['name', 'size', 'seeds', 'leech', 'magnet']]
+            st.markdown(results.to_html(render_links=True, escape=False),unsafe_allow_html=True)
+            # st.dataframe(results)
+            # print(results[['name', 'size', 'seeds', 'leech', 'link']])
+
+        # else:
+        #     st.error("No results found")
 
 if __name__=="__main__":
     main()
