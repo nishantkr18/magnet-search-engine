@@ -1,13 +1,41 @@
-from search_engines import piratebay, torrentscsv
 import pandas as pd
 import urllib
+from os import path
+from glob import glob
+
+
+def initialize_engines():
+    """ Import available engines
+        Return list of available engines
+    """
+    supported_engines = []
+
+    engines = glob(path.join('search_engines', '*.py'))
+    for engine in engines:
+        engi = path.basename(engine).split('.')[0].strip()
+        # print(engi)
+        if len(engi) == 0 or engi.startswith('_'):
+            continue
+        try:
+            # import engines.[engine]
+            engine_module = __import__(".".join(("search_engines", engi)))
+            # get low-level module
+            engine_module = getattr(engine_module, engi)
+            # bind class name
+            globals()[engi] = getattr(engine_module, engi)
+            engi = globals()[engi]()
+
+            supported_engines.append(engi)
+        except Exception as e:
+            print(e.__str__())
+            pass
+
+    return supported_engines
+
 
 class Engine():
     def __init__(self):
-        self.engines = [
-            piratebay.piratebay(), 
-            torrentscsv.torrentscsv()
-        ]
+        self.engines = initialize_engines()
 
     def search(self, **kwargs):
         kwargs['what'] = urllib.parse.quote(kwargs['what'])
