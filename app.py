@@ -11,7 +11,7 @@ def show_results(results):
 
 def main():
     st.title("Movie search engine")
-    search_text = st.text_input("Search for a movie:", value='The Matrix')
+    search_text = st.text_input("Search for a movie:", value='Horrible bosses')
     button = st.button('Search')
     if button or search_text:
         with st.spinner('Looking up...'):
