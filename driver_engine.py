@@ -1,5 +1,6 @@
 from search_engines import piratebay, torrentscsv
 import pandas as pd
+import urllib
 
 class Engine():
     def __init__(self):
@@ -9,6 +10,7 @@ class Engine():
         ]
 
     def search(self, **kwargs):
+        kwargs['what'] = urllib.parse.quote(kwargs['what'])
         results = []
         for engine in self.engines:
             gen = engine.search(**kwargs)
