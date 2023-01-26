@@ -1,7 +1,7 @@
 # a basic streamlit application.   
 
 import streamlit as st
-
+import os
 from driver_engine import Engine
 from download import download_torrent
 
@@ -15,14 +15,22 @@ def main():
     search_text = st.text_input("Search for a movie:", value='The Matrix')
     button = st.button('Search')
 
-    download_button = st.button('Download')
-    if download_button:
+    if st.button('Download'):
         magnet_link = 'magnet:?xt=urn:btih:A437EB6825720E780C4C33063476499EC6B57276&dn=Horrible+Bosses+%282011%29+1080p+BrRip+x264+-+YIFY&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fwww.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Fretracker.lanta-net.ru%3A2710%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce'
         download_torrent(magnet_link=magnet_link)
     
-    play_button = st.button('Play')
-    if play_button:
-        video_file = open('downloads\Horrible Bosses (2011) [1080p]\Horrible.Bosses.2011.1080p.BluRay.x264.YIFY.mp4', 'rb')
+    filelist=[]
+    to_play = None
+    for root, dirs, files in os.walk("downloads"):
+        for file in files:
+                filename=os.path.join(root, file)
+                if file.endswith(".mp4"):
+                    to_play = filename
+                filelist.append(filename)
+    st.write(filelist)
+
+    if st.button('Play') and to_play is not None:
+        video_file = open(to_play, 'rb')
         video_bytes = video_file.read()
         print("Loaded video")
 
