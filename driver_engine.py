@@ -48,7 +48,9 @@ class Engine():
             df['size'] = (pd.to_numeric(df['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
             df['link'] = df['link'].apply(lambda x: f'<a target="_blank" href="{x}">Download</a>')
             df = df[['name', 'size', 'seeds', 'leech', 'link']]
-            df = df.astype({'seeds': 'int32', 'leech': 'int32'}, copy=False)
+            df = df.astype({'name': 'str', 'seeds': 'int32', 'leech': 'int32'}, copy=False)
+            df.drop_duplicates(subset=['link'], inplace=True, ignore_index=True, keep='first')
             df.sort_values(by=['seeds'], ascending=False, inplace=True, ignore_index=True)
+
 
             yield df           
