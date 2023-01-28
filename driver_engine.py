@@ -10,12 +10,13 @@ def initialize_engines():
     """
     supported_engines = []
 
-    engines = glob(path.join('search_engines', '*.py'))
-    for engine in engines:
-        engi = path.basename(engine).split('.')[0].strip()
-        # print(engi)
-        if len(engi) == 0 or engi.startswith('_'):
-            continue
+    # Manually adding engines here to state priority.
+    engines = [
+        'torrentscsv',
+        'piratebay',
+        'rarbg'
+    ]
+    for engi in engines:
         try:
             # import engines.[engine]
             engine_module = __import__(".".join(("search_engines", engi)))
@@ -41,14 +42,16 @@ class Engine():
         kwargs['what'] = urllib.parse.quote(kwargs['what'])
         results = []
         for engine in self.engines:
+            print('Searching in', engine.name)
             gen = engine.search(**kwargs)
             for val in gen:
                 results.append(val)
-            df = pd.DataFrame.from_dict(results)
-            df['size'] = (pd.to_numeric(df['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
-            df['link'] = df['link'].apply(lambda x: f'<a target="_blank" href="{x}">Download</a>')
-            df = df[['name', 'size', 'seeds', 'leech', 'link']]
-            df = df.astype({'seeds': 'int32', 'leech': 'int32'}, copy=False)
-            df.sort_values(by=['seeds'], ascending=False, inplace=True, ignore_index=True)
+            if len(results) > 0:
+                df = pd.DataFrame.from_dict(results)
+                df['size'] = (pd.to_numeric(df['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
+                df['link'] = df['link'].apply(lambda x: f'<a target="_blank" href="{x}">Download</a>')
+                df = df[['name', 'size', 'seeds', 'leech', 'link']]
+                df = df.astype({'seeds': 'int32', 'leech': 'int32'}, copy=False)
+                df.sort_values(by=['seeds'], ascending=False, inplace=True, ignore_index=True)
 
-            yield df           
+                yield df           

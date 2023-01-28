@@ -77,7 +77,7 @@ def retrieve_url(url):
         response = urllib.request.urlopen(req)
     except urllib.error.URLError as errno:
         print(" ".join(("Connection error:", str(errno.reason))))
-        return ""
+        return "{}"
     dat = response.read()
     # Check if it is gzipped
     if dat[:2] == b'\x1f\x8b':
