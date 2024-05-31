@@ -2,37 +2,19 @@ import pandas as pd
 import urllib
 from os import path
 from glob import glob
-
+import search_engines
 
 def initialize_engines():
     """ Import available engines
         Return list of available engines
     """
-    supported_engines = []
 
     # Manually adding engines here to state priority.
-    engines = [
-        'piratebay',
-        'torrentscsv',
-        'rarbg'
+    return [
+        search_engines.piratebay(),
+        search_engines.torrentscsv(),
+        search_engines.rarbg()
     ]
-    for engi in engines:
-        try:
-            # import engines.[engine]
-            engine_module = __import__(".".join(("search_engines", engi)))
-            # get low-level module
-            engine_module = getattr(engine_module, engi)
-            # bind class name
-            globals()[engi] = getattr(engine_module, engi)
-            engi = globals()[engi]()
-
-            supported_engines.append(engi)
-        except Exception as e:
-            print(e.__str__())
-            pass
-
-    return supported_engines
-
 
 class Engine():
     def __init__(self):
