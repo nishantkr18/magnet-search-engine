@@ -1,13 +1,5 @@
-# a basic streamlit application.   
-
 import streamlit as st
-
 from driver_engine import Engine
-
-
-def show_results(results):
-    st.markdown(results.to_html(render_links=True, escape=False),unsafe_allow_html=True)
-
 
 def main():
     st.title("Movie search engine")
@@ -17,8 +9,8 @@ def main():
         with st.spinner('Looking up...'):
             with st.empty():
                 for results in Engine().search(what=search_text, cat='movies'):
-                    show_results(results) 
+                    st.markdown(results.to_html(render_links=True,
+                                escape=False), unsafe_allow_html=True)
 
 if __name__=="__main__":
     main()
-print()

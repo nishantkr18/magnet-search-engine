@@ -12,8 +12,8 @@ def initialize_engines():
 
     # Manually adding engines here to state priority.
     engines = [
-        'torrentscsv',
         'piratebay',
+        'torrentscsv',
         'rarbg'
     ]
     for engi in engines:
@@ -43,15 +43,22 @@ class Engine():
         results = []
         for engine in self.engines:
             print('Searching in', engine.name)
-            gen = engine.search(**kwargs)
-            for val in gen:
-                results.append(val)
+            try:
+                gen = engine.search(**kwargs)
+                for val in gen:
+                    results.append(val)
+            except Exception as e:
+                print(e.__str__())
             if len(results) > 0:
                 df = pd.DataFrame.from_dict(results)
-                df['size'] = (pd.to_numeric(df['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
-                df['link'] = df['link'].apply(lambda x: f'<a target="_blank" href="{x}">Download</a>')
+                df['size'] = (pd.to_numeric(
+                    df['size'].str[:-2])/1024/1024/1024).astype(float).round(2).astype(str) + " GB"
+                df['link'] = df['link'].apply(
+                    lambda x: f'<a target="_blank" href="{x}">Download</a>')
                 df = df[['name', 'size', 'seeds', 'leech', 'link']]
-                df = df.astype({'seeds': 'int32', 'leech': 'int32'}, copy=False)
-                df.sort_values(by=['seeds'], ascending=False, inplace=True, ignore_index=True)
+                df = df.astype(
+                    {'seeds': 'int32', 'leech': 'int32'}, copy=False)
+                df.sort_values(by=['seeds'], ascending=False,
+                               inplace=True, ignore_index=True)
 
-                yield df           
+                yield df
